@@ -3,7 +3,7 @@
     class PubSub {
       constructor () {
         // this is where we will gather event handlers
-        this.topics = [];
+        this.topics = {};
       }
   
       // this is how we check if we already have handlers for the given topic
@@ -19,7 +19,7 @@
         } else {
           // if we have handlers,
           // let's go through them and call them with the given data
-          topics[topic].forEach((item) => {
+          this.topics[topicName].forEach((item) => {
             item(data);
           });
         }
@@ -39,7 +39,7 @@
       // that could come handy in a more general use case
     } 
   
-    // this is how script.js will be able to use PubSub
-    window.PubSub = PubSub;
+    // this is how script.js will be able to use this one PubSub instance
+    window.PubSub = new PubSub();
   
   })();
