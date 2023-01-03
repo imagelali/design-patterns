@@ -1,24 +1,26 @@
-// start with an IIFE to keep the global namespace clean
+// kezdjük egy IIFE-vel, hogy tisztán tartsuk a globális névteret:
 (function () {
-    // UI class for changing the user interface
-    class CartUI {
-      // we only have one cart,
-      // so we no longer need to clone a template and
-      // append to a body
+    //  UI osztály a felhasználói felület megváltoztatásához:
+    class CartView {
+      // csak egy kocsink van,
+      // így már nem kell sablont klónoznunk és
+      // hozzáfűz egy testhez:
       constructor(element) {
-        // here we only need the cart table
-        // to append rows to,
-        // so only one element reference to store:
+        // itt csak a kocsiasztalra van szükségünk
+        // sorok hozzáfűzése ehhez,
+        // tehát csak egy elemhivatkozás tárolandó:
         this.container = element;
+        // feliratkozás az updateCart témára:
+        PubSub.subscribe("updateCart", (products) => this.updateCart(products));
       }
   
-      // this is a "private" method, meant to be used from other methods only
-      // hence the _
+      // ez egy "privát" metódus, csak más módszerekhez használható
+    // ezért a _ :
       _rowTemplate(productData) {
-        return `<tr><td>${productData.name}</td><td class="has-text-right">€${productData.price}</td></tr>`;
+        return `<tr><td>${productData.name}</td><td class="has-text-right">${productData.price}</td></tr>`;
       }
   
-      // build HTML based on product data and row template
+      // HTML készítése termékadatok és sorsablon alapján:
       _buildCartHTML(productList) {
         let cartContent = "";
         for (const product of productList) {
@@ -27,32 +29,38 @@
         return cartContent;
       }
   
-      // this is the public API for our cart UI objects:
-      // method to change the UI by only changing the
-      // content of the cart table
+      // ez a kosár UI-objektumaink nyilvános API-ja:
+      // metódus a felhasználói felület megváltoztatásához csak a
+      // a kosár táblázat tartalma :
       updateCart(products) {
         this.container.innerHTML = this._buildCartHTML(products);
       }
     }
   
-    // this way the other JS files can also use this class
-    window.CartUI = CartUI;
+    // így a többi JS fájl is használhatja ezt az osztályt:
+    window.CartView = CartView;
   
-    // Cart class for adding items to cart
-    class Cart {
+    // Kosár osztály tételek kosárba helyezéséhez:
+    class CartModel {
       constructor() {
         this.items = [];
+
+        // iratkozz fel az addToCart témára:
+        PubSub.subscribe ( "addToCart" , ( item ) => this . addItem ( item ) ) ;   
       }
   
-      // API for Cart object
+      //API a kosár objektumhoz: 
       addItem(item) {
         this.items.push(item);
+      // frissített cikklista közzététele az updateCart témában
+      // amikor a kosár tartalma frissül:
+        PubSub.publish("updateCart" , this.getItems());
       }
       getItems() {
         return this.items;
       }
     }
   
-    // this way the other JS files can also use this class
-    window.Cart = Cart;
+    // így a többi JS fájl is használhatja ezt az osztályt:
+    window.CartModel = CartModel;
   })();
