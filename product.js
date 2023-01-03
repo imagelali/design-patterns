@@ -1,15 +1,15 @@
-// start with an IIFE to keep the global namespace clean
+// kezdjük egy IIFE-vel, hogy tisztán tartsuk a globális névteret:
 (function(){
 
-    // UI class for changing the user interface
+    //  UI osztály a felhasználói felület megváltoztatásához:
     class ProductView {
-      // the UI constructor now has a "templateElement" and a "parentElement" parameter
-      // to create a new DOM element based on the template
-      // and append it to the given parent
+      // a felhasználói felület konstruktorának van egy "templateElement" és egy "parentElement" paramétere
+      // új DOM elem létrehozásához a sablon alapján
+      // és hozzáfűzzük az adott szülőhöz:
       constructor(templateElement, parentElement) {
-        // this is basically our configuration,
-        // the part that might have to change when the HTML changes:
-        // gathering the selectors for the elements we will be working with
+        //  ez alapvetően a mi konfigurációnk,
+        // az a rész, amelyet esetleg módosítani kell a HTML megváltoztatásakor:
+        // a kiválasztók összegyűjtése azokhoz az elemekhez, amelyekkel dolgozni fogunk
         this.productImageSelector = ".js-product-image";
         this.productNameSelector = ".js-product-name";
         this.productCategorySelector = ".js-product-category";
@@ -17,12 +17,12 @@
         this.productPriceSelector = ".js-product-price";
         this.productButtonSelector = ".js-product-button";
     
-        // clone the template to create a new DOM element
+        // klónozzuk a sablont egy új DOM elem létrehozásához:
         this.node = templateElement.cloneNode(true);
-        // and append the new DOM element to the end of the product list
+        //  és hozzáfűzi az új DOM elemet a terméklista végéhez:
         parentElement.appendChild(this.node);
     
-        // using the selectors above, we store the elements in private variables
+        // a fenti szelektorok segítségével privát változókban tároljuk az elemeket:
         this.productImageElement = this.node.querySelector(this.productImageSelector);
         this.productNameElement = this.node.querySelector(this.productNameSelector);
         this.productCategoryElement = this.node.querySelector(this.productCategorySelector);
@@ -30,19 +30,19 @@
         this.productPriceElement = this.node.querySelector(this.productPriceSelector);
         this.productButtonElement = this.node.querySelector(this.productButtonSelector);
     
-        // add event listeners
+        // eseményfigyelők hozzáadása:
         this.productButtonElement.addEventListener("click", this.handleClick);
       }
     
       handleClick () {
-        // "this" will refer to the clicked button here
+        // "ez" az itt kattintott gombra fog utalni:
         const productData = this.dataset;
         PubSub.publish("addToCart", productData);
       }
     
-      // this is the API for our UI objects:
-      // methods to change the UI by only changing the
-      // content of the stored elements
+      // ez az API az UI objektumokhoz:
+      // módszerek a felhasználói felület megváltoztatására úgy, hogy csak a
+      // a tárolt elemek tartalma
       setProductImage (src) {
         this.productImageElement.src = src;
       }
@@ -59,23 +59,23 @@
         this.productPriceElement.textContent = price;
       }
     
-      // let's add a method that sets our UI up in one go
+      // adjunk hozzá egy metódust, amely egy mozdulattal beállítja a felhasználói felületünket:
       setUp (productInfo) {
         this.productImageElement.src = productInfo.image;
         this.productNameElement.textContent = productInfo.name;
         this.productCategoryElement.textContent = productInfo.category;
         this.productDescriptionElement.textContent = productInfo.description;
         this.productPriceElement.textContent = productInfo.price;
-        // data for the event handler
+        // az eseménykezelő adatai:
         this.productButtonElement.dataset.name = productInfo.name;
         this.productButtonElement.dataset.price = productInfo.price;
       }
     };
     
-    // this way the other JS files can also use this class
+    // ezzel a többi js fájl is használhatja ezt az osztályt:
     window.ProductView = ProductView;
     
-    // Product class for gathering product related info
+    // A Termékosztály, ami összegyűjti a termékekkel kapcsolatos információkat:
     class ProductModel {
     
       constructor (productInfo) {
@@ -86,7 +86,7 @@
         this.price = productInfo.price;
       }
     
-      // API for ProductModel objects for getting product info
+      // API a ProductModel objektumhoz a termékinformációk lekéréséhez:
       getName () {
         return this.name;
       }
@@ -102,7 +102,7 @@
       getPrice () {
         return `€${this.price}`;
       }
-      // let's add a method that returns all that
+      // adjunk hozzá egy metódust, ami a fentieket visszaadja:
       getInfo () {
         return {
           name: this.name,
@@ -114,7 +114,7 @@
       }
     };
     
-    // this way the other JS files can also use this class
+    // hogy a többi JS fájl is használhassa ezt az osztályt:
     window.ProductModel = ProductModel;
     
     })();
