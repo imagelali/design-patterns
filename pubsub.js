@@ -2,23 +2,23 @@
 
     class PubSub {
       constructor () {
-        // this is where we will gather event handlers
+        // ide fogjuk összegyüjteni az eseménykezelőket:
         this.topics = {};
       }
   
-      // this is how we check if we already have handlers for the given topic
+      // így ellenőrizhetjük, hogy vannak-e már kezelőink az adott témához:
       hasHandler(topicName) {
         return this.topics.hasOwnProperty(topicName);
       }
   
       publish (topicName, data) {
-        // if we don't have any handlers for the given topic,
-        // there's nothing to do
+        // ha nincs kezelőnk az adott témához,
+        // nincs mit tenni:
         if (!this.hasHandler(topicName)) {
           return;
         } else {
-          // if we have handlers,
-          // let's go through them and call them with the given data
+          // ha vannak kezelőink,
+          // menjünk át rajtuk és hívjuk meg őket a megadott adatokkal:
           this.topics[topicName].forEach((item) => {
             item(data);
           });
@@ -26,20 +26,20 @@
       }
   
       subscribe (topicName, handler) {
-        // if we don't have handlers for the given topic,
-        // start by creating a list 
+        // ha nincsenek kezelőink az adott témához,
+        // kezdje el egy lista létrehozásával: 
         if (!this.hasHandler(topicName)) {
           this.topics[topicName] = [];
         }
-        // add the new handler to the topic's handler list
+        // az új kezelő hozzáadása a téma kezelői listájához:
         this.topics[topicName].push(handler);
       }
   
-      // we don't have a way to remove listeners for now, 
-      // that could come handy in a more general use case
+      // egyenlőre nem tudjuk eltávolítani a hallgatókat, 
+      // ami hasznos lehet egy általánosabb használati esetben.
     } 
   
-    // this is how script.js will be able to use this one PubSub instance
+    // A script.js így tudja használni ezt az egyetlen PubSub példányt:
     window.PubSub = new PubSub();
   
   })();
