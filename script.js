@@ -1,20 +1,20 @@
-// start with an IIFE to keep the global namespace clean
+//  kezdjük egy IIFE-vel, hogy tisztán tartsuk a globális névteret:
 (function(){
     class ShopController {
       constructor(productList) {
         this.productList = productList;
         this.UITemplate = document.querySelector(".js-product");
         this.ProductListElement = document.querySelector(".js-product-list");
-        // we stored the template in a variable
-        // so now we can remove it from the live DOM
+        // a sablont egy változóban tároltuk
+        // így most eltávolíthatjuk az élő DOM-ból:
         this.UITemplate.remove();
   
-        // initialize products
+        // a termékek inicializálása:
         for (let product of this.productList) {
           this._initProduct(product);
         }
   
-        // initialize cart
+        // a kosár inicializálása:
         this.cartContainer = document.querySelector(".js-cart");
         this.cartUI = new CartView(this.cartContainer);
         this.cart = new CartModel();
@@ -31,8 +31,8 @@
       }
     }
   
-    // this would most likely come from some database through an API of sorts,
-    // but for now, we have all our products in this list:
+    // ez valószínűleg valamilyen adatbázisból származik egy API-n keresztül,
+    // de egyelőre az összes termékünk szerepel ezen a listán:
     const productList = [
       {
         name: "DisCatcher Target",
@@ -52,6 +52,6 @@
       },
     ];
   
-    // launch shop initialization by creating a new ShopController instance
+    // elindítja a bolt inicializálását egy új ShopController példány létrehozásával:
     const berryShop = new ShopController(productList);
   })();
